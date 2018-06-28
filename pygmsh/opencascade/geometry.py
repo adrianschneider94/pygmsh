@@ -19,7 +19,7 @@ from ..built_in import geometry as bl
 
 
 class Geometry(bl.Geometry):
-    def __init__(self, characteristic_length_min=None, characteristic_length_max=None):
+    def __init__(self, characteristic_length_min=None, characteristic_length_max=None, extend_from_boundary=False):
         super(Geometry, self).__init__()
         self._BOOLEAN_ID = 0
         self._EXTRUDE_ID = 0
@@ -37,6 +37,11 @@ class Geometry(bl.Geometry):
             self._GMSH_CODE.append(
                 "Mesh.CharacteristicLengthMax = {};".format(characteristic_length_max)
             )
+
+        self._GMSH_CODE.append(
+            "Mesh.CharacteristicLengthExtendFromBoundary = {};".format(int(extend_from_boundary))
+        )
+
         return
 
     def get_code(self):

@@ -6,11 +6,13 @@ from .__about__ import __version__, __author__, __author_email__, __website__
 
 from . import built_in
 from . import opencascade
+from . import meshing
 from .helpers import generate_mesh, get_gmsh_major_version, rotation_matrix
 
 __all__ = [
     "built_in",
     "opencascade",
+    "meshing",
     "generate_mesh",
     "get_gmsh_major_version",
     "rotation_matrix",
