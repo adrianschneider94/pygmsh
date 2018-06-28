@@ -3,6 +3,8 @@
 
 import numpy
 
+from lxml import etree
+
 from ..__about__ import __version__
 from ..helpers import _is_string
 
@@ -34,6 +36,7 @@ class Geometry(object):
         self._FIELD_ID = 0
         self._GMSH_MAJOR = gmsh_major_version
         self._TAKEN_PHYSICALGROUP_IDS = []
+        self._PHYSICAL_GROUPS = []
         self._GMSH_CODE = [
             "// This code was created by pygmsh v{}.".format(__version__)
         ]
@@ -151,6 +154,7 @@ class Geometry(object):
             return str(label)
 
         assert _is_string(label)
+        self._PHYSICAL_GROUPS.append((label, max_id + 1,))
         self._TAKEN_PHYSICALGROUP_IDS += [max_id + 1]
         return '"{}"'.format(label)
 
@@ -180,6 +184,14 @@ class Geometry(object):
     def add_physical_volume(self, volumes, label=None):
         self._add_physical("Volume", volumes, label=label)
         return
+
+    def write_physical_groups(self, filename):
+        root = etree.Element("PhysicalGroups")
+        for physical_group in self._PHYSICAL_GROUPS:
+            root.append(etree.Element("PhysicalGroup", name=str(physical_group[0]), id=str(physical_group[1])))
+        with open(filename, 'wb') as f:
+            f.write(etree.tostring(root, pretty_print=True))
+
 
     def set_transfinite_lines(self, lines, size):
         self._GMSH_CODE.append(
@@ -316,7 +328,7 @@ class Geometry(object):
 
         if _is_string(input_entity):
             entity = Dummy(input_entity)
-        elif isinstance(input_entity, SurfaceBase):
+        elif isinstance(input_entity, LineBase):
             entity = Dummy("Surface{{{}}}".format(input_entity.id))
         elif hasattr(input_entity, "surface"):
             entity = Dummy("Surface{{{}}}".format(input_entity.surface.id))
@@ -377,9 +389,9 @@ class Geometry(object):
         if isinstance(input_entity, LineBase):
             top = LineBase(top)
             # A surface extruded from a single line has always 4 edges
-            extruded = SurfaceBase(extruded, 4)
-        elif isinstance(input_entity, SurfaceBase):
-            top = SurfaceBase(top, input_entity.num_edges)
+            extruded = LineBase(extruded, 4)
+        elif isinstance(input_entity, LineBase):
+            top = LineBase(top, input_entity.num_edges)
             extruded = VolumeBase(extruded)
         else:
             top = Dummy(top)
@@ -387,7 +399,7 @@ class Geometry(object):
 
         lat = []
         # lateral surfaces can be deduced only if we start from a SurfaceBase
-        if isinstance(input_entity, SurfaceBase):
+        if isinstance(input_entity, LineBase):
             # out[0]` is the surface, out[1] the top, and everything after that
             # the sides, cf.
             # <https://gmsh.info/doc/texinfo/gmsh.html#Extrusions>. Each
@@ -395,7 +407,7 @@ class Geometry(object):
             # from top, and the two lines (or splines) connecting their extreme
             # points.
             lat = [
-                SurfaceBase("{}[{}]".format(name, i + 2), 4)
+                LineBase("{}[{}]".format(name, i + 2), 4)
                 for i in range(input_entity.num_edges)
             ]
 
