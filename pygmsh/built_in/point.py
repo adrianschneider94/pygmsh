@@ -14,6 +14,7 @@ class Point(object):
     """
 
     _POINT_ID = 0
+    _NAME = "Point"
 
     def __init__(self, x, lcar=None):
         self.x = x
