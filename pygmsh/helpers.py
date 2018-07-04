@@ -60,7 +60,7 @@ def _is_flat(X, tol=1.0e-15):
 
 
 def _get_gmsh_exe():
-    macos_gmsh_location = "C:\\Users\\adrian\\lib\\gmsh-3.0.6-Windows64\\gmsh.exe"
+    macos_gmsh_location = "/Applications/Gmsh.app/Contents/MacOS/gmsh"
     return macos_gmsh_location if os.path.isfile(macos_gmsh_location) else "gmsh"
 
 
