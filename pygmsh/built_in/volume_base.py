@@ -14,6 +14,7 @@ class VolumeBase(object):
     """
 
     _ID = 0
+    _NAME = "Volume"
     dimension = 3
 
     def __init__(self, id0=None):

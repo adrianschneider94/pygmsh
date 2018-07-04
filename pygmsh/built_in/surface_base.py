@@ -14,6 +14,7 @@ class SurfaceBase(object):
     """
 
     _ID = 0
+    _NAME = "Surface"
     num_edges = 0
     dimension = 2
 

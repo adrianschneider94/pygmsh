@@ -8,11 +8,14 @@ from . import built_in
 from . import opencascade
 from . import meshing
 from .helpers import generate_mesh, get_gmsh_major_version, rotation_matrix
+from .meshing.sets import boundary_of, points_of
 
 __all__ = [
     "built_in",
     "opencascade",
     "meshing",
+    "boundary_of",
+    "points_of",
     "generate_mesh",
     "get_gmsh_major_version",
     "rotation_matrix",

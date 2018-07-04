@@ -15,6 +15,7 @@ class LineBase(object):
     """
 
     _ID = 0
+    _NAME = "Line"
     dimension = 1
 
     def __init__(self, id0=None):
